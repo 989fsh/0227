@@ -1,0 +1,110 @@
+<!DOCTYPE html> 
+<html lang="cn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XU5设计软件库丨xu5.cc</title>
+  <meta name="keywords" content="设计软件,软件导航,Adobe,C4D,CAD,达芬奇">
+  <meta name="description" content="XU5设计软件库是一个集合专业设计软件的导航网站，免费下载供学习使用，本站承诺无毒无广告，纯公益项目，不以此盈利">
+  <link rel="stylesheet" href="index.css">
+  <link href="style.css" rel="stylesheet">
+  <link rel="icon" href="/logo.ico">
+
+  <style>
+ .footer,.header{padding:10px}.header .logo{font-size:24px;font-weight:700}.item-tabs{margin-top:20px}.item-content{padding:10px}.nav{cursor:pointer;margin:5px 0}.el-icon-arrow-right{float:right}.footer{text-align:center;padding:20px 0}.free-label{position:absolute;top:-9px;right:-5px;transform:rotate(10deg);padding:2px 5px;border-radius:3px;font-size:9px;color:#00ff45;z-index:1;animation:colorChange 1s infinite alternate}@keyframes colorChange{0%{color:#fff}100%{color:red}}.btn{position:relative;width:14.25%;font-size:15px;padding:0 2px!important;background:rgb(4 0 35 / 90%);border-radius:5px;cursor:pointer;line-height:40px;margin:.1rem .1%;white-space:nowrap;overflow:hidden}[v-cloak]{display:none}.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);backdrop-filter:blur(5px);display:flex;justify-content:center;align-items:center;padding:10px;z-index:9999;opacity:0;pointer-events:none;transition:opacity .3s ease}.modal.visible{opacity:1;pointer-events:auto}.modal-content{background:linear-gradient(135deg,#fff,#e0e0e0);border:1px solid #ccc;padding:20px;border-radius:12px;width:90%;max-width:600px;box-shadow:0 10px 20px rgba(0,0,0,.2);text-align:center;position:relative;transform:scale(.95);transition:transform .3s ease}.modal.visible .modal-content{transform:scale(1)}.modal-content h3{margin-bottom:20px;font-size:22px;color:#333;font-weight:700}.modal-content p{font-size:15px;color:#555;margin-bottom:15px}.modal-content .input-container{display:flex;align-items:center;justify-content:center;margin-bottom:20px}.modal-content input{width:calc(100% - 130px);padding:10px;border-radius:8px;border:1px solid #ddd;transition:border-color .3s ease,box-shadow .3s ease}.modal-content input:focus{border-color:#007bff;box-shadow:0 0 8px rgba(0,123,255,.5);outline:0}.modal-content button{padding:10px 15px;background-color:#4caf50;color:#fff;border:none;border-radius:8px;cursor:pointer;transition:background-color .3s ease,box-shadow .3s ease;font-size:15px;box-shadow:0 8px 15px rgba(76,175,80,.3);margin-left:10px}.modal-content button:hover{background-color:#45a049;box-shadow:0 12px 25px rgba(69,160,73,.4)}.modal-close-text{position:absolute;top:10px;right:10px;font-size:16px;color:#aaa;cursor:pointer;text-decoration:underline;transition:color .3s ease}.modal-close-text:hover{color:#333}.wechat-qr{width:150px;margin:15px auto;border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,.2);transition:transform .3s ease}.wechat-qr:hover{transform:scale(1.05)}.hover-info{position:relative}.hover-info:hover+.hover-image{display:block}.hover-image{display:none;position:absolute;top:100%;left:30%;transform:translateX(-50%);width:300px;border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,.2);background:#fff;z-index:1000}
+    </style>
+  <!-- 使用异步加载外部脚本 -->
+  <script src="vue.js" defer></script>
+</head>
+<body>
+  <div id="app" v-cloak>
+    <div class="container">
+      <div class="head">
+        <a class="sitename" href="/">XU5.CC</a>
+        <p><font color="red">本站为公益站点,请Ctrl+D保存网址www.xu5.cc到收藏夹</font></p>
+      </div>
+
+      <div class="item-tabs">
+        <div class="search">
+          <el-input
+            v-model="search.in"
+            placeholder="输入软件名称，如：ps2024、cad2025、ae等"
+            prefix-icon="el-icon-search"
+            clearable
+            @input="debouncedSearch">
+            <template slot="prepend">搜索</template>
+          </el-input>
+          <div v-show="!search.res.length && search.in" class="empty">无数据，换个词试试</div>
+        </div>
+
+        <div v-if="search.in" class="search-result-info">
+          以下是“{{ search.in }}”的搜索结果
+        </div>
+
+        <div v-if="search.in" class="item-content search-result">
+          <div v-for="(item, index) in search.res" :key="index" class="nav">
+            <div class="name">{{ item.name }}</div>
+            <div class="urls">
+              <span v-if="item.xun" class="url" @click.stop="go(item.xun)">迅雷下载</span>
+			  <span v-if="item.uc" class="uc url" @click.stop="go(item.uc)">夸克网盘</span>
+
+              <span v-if="item.jc" class="jc url" @click.stop="go(item.jc)">安装教程</span>
+              <span v-if="item.wenti" class="wenti url" @click.stop="go(item.wenti)">常见问题</span>
+            </div>
+          </div>
+        </div>
+
+        <el-tabs v-if="!search.in" tab-position="left" value="Adobe">
+          <el-tab-pane v-for="(tabItem, tabIndex) in db" :key="tabIndex" :name="tabItem.tab">
+            <span slot="label">{{ tabItem.tab }}</span>
+            <div class="tab-content">
+              <el-collapse accordion>
+                <el-collapse-item v-for="(listItem, listIndex) in tabItem.list" :key="listIndex" :name="listItem.title" :disabled="!listItem.nav.length">
+                  <template slot="title">
+                    <el-image :src="listItem.icon" class="img">
+                      <span slot="error" class="img-err"></span>
+                    </el-image>
+                    <span class="item-name">{{ listItem.title }}</span>
+                  </template>
+                  <div class="item-content">
+                    <div v-for="(navItem, navIndex) in listItem.nav" :key="navIndex" class="nav">
+                      <div class="name">{{ navItem.name }}</div>
+                      <div class="urls">
+                        <span v-if="navItem.xun" class="xun url" @click.stop="go(navItem.xun)">迅雷下载</span>
+						<span v-if="navItem.uc" class="uc url" @click.stop="go(navItem.uc)">夸克网盘</span>
+
+                        <span v-if="navItem.jc" class="jc url" @click.stop="go(navItem.jc)">安装教程</span>
+                        <span v-if="navItem.wenti" class="wenti url" @click.stop="go(navItem.wenti)">常见问题</span>
+                      </div>
+                    </div>
+                  </div>
+                </el-collapse-item>
+              </el-collapse>
+            </div>
+          </el-tab-pane>
+        </el-tabs>
+      </div>
+
+      <div class="footer">
+        <a class="time" href="/"> © 2017-{{ new Date().getFullYear() }} XU5设计软件库2025-2-13</a>
+      </div>
+    </div>
+<script src="index.js" defer></script>
+    <!-- 弹窗 
+    <div class="modal" :class="{ visible: modalVisible }">
+      <div class="modal-content" style="display: flex; flex-direction: column; align-items: center;">
+        <span class="modal-close-text" @click="closeModal">关闭</span>
+        <h3>{{ modalTitle }}</h3>
+        <div class="input-container" style="display: flex; gap: 10px; align-items: center; justify-content: space-between; width: 100%; flex-wrap: nowrap;"><input v-model="modalInput" type="text" placeholder="" style="flex-grow: 2; min-width: 150px;">
+          <button @click="verifyAccess" style="flex-shrink: 0; min-width: 80px;">确认</button>
+        </div>
+        <p>请搜索并关注公众号<span style="background-color: black; color: white; padding: 2px 4px; border-radius: 3px;">绿软分享</span>，发送<span style="background-color: black; color: white; padding: 2px 4px; border-radius: 3px;">验证码</span>，即可获取验证码！<span class="hover-info" style="text-decoration: underline; cursor: pointer;">查看</span><img src="static/img/icons/yanzheng.jpg" alt="二维码预览" class="hover-image" style="right: -200px; top: 50%; transform: translateY(-50%);"></p> 
+        <img src="static/img/icons/wei1.jpg" alt="公众号二维码" class="wechat-qr" style="width: auto; max-width: 100%; height: auto; align-self: center;">
+      </div>
+    </div>-->
+  </div>  
+</body>
+<script src="popup.js" defer></script>
+<script src="date.js" defer></script>
+
+</html>
